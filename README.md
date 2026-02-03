@@ -106,24 +106,3 @@ L’app consente di creare e gestire più liste di attività, aggiungere e compl
 flutter pub get
 flutter run
 ```
-
-Prerequisiti:
-
-* Flutter SDK aggiornato
-* Emulator Android/iOS o dispositivo fisico
-
----
-
-## Possibili estensioni future
-
-* Persistenza dei dati (SQLite, Hive)
-* Sincronizzazione cloud
-* Notifiche e reminder
-* Filtri e ordinamento avanzato
-* Internazionalizzazione (i18n)
-
----
-
-## Note
-
-Il progetto è strutturato per essere facilmente estendibile e mantenibile, ed è adatto come base per applicazioni di produttività o come esempio pratico di sviluppo Flutter moderno.
