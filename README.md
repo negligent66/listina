@@ -5,8 +5,9 @@ Applicazione **Todo List** sviluppata in **Flutter**.
 ---
 
 ## Panoramica  
-
- L’app consente di creare e gestire più liste di attività, aggiungere e completare task, visualizzare statistiche dettagliate e monitorare l’efficienza complessiva tramite indicatori percentuali e barre di progresso.
+  
+L’app consente di creare e gestire più liste di attività, aggiungere e completare task, visualizzare statistiche dettagliate e monitorare l’efficienza complessiva tramite indicatori percentuali e barre di progresso.  
+  
 ---
 
 ## Funzionalità principali
