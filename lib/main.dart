@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
 
 void main() {
   runApp(const TodoApp());
@@ -41,15 +43,28 @@ class TodoList {
   String name;
   List<TodoItem> items;
 
-  TodoList({required this.name, List<TodoItem>? items})
+  TodoList({required this.name, List<TodoItem>? items}) 
       : items = items ?? [];
+
+  // Conversione da/per JSON
+  Map<String, dynamic> toJson() => {
+    'name': name,
+    'items': items.map((item) => item.toJson()).toList(),
+  };
+
+  factory TodoList.fromJson(Map<String, dynamic> json) => TodoList(
+    name: json['name'],
+    items: (json['items'] as List)
+        .map((item) => TodoItem.fromJson(item))
+        .toList(),
+  );
 
   // Easter egg: controlla se il nome contiene riferimenti a Dragon Ball
   Map<String, dynamic>? getThemeColors() {
     final lowerName = name.toLowerCase();
-
+    
     // IMPORTANTE: Controlli più specifici PRIMA di quelli generici!
-
+    
     // Goku Black/Zamasu - Rosa/Nero (PRIMA di Goku normale!)
     if (lowerName.contains('goku black') || lowerName.contains('black') || lowerName.contains('zamasu') || lowerName.contains('rose')) {
       return {
@@ -58,7 +73,7 @@ class TodoList {
         'accent': const Color(0xFFFF69B4),
       };
     }
-
+    
     // Ultra Instinct - Argento/Bianco (PRIMA di UI generici!)
     if (lowerName.contains('ultra instinct') || lowerName.contains('migatte')) {
       return {
@@ -67,7 +82,7 @@ class TodoList {
         'accent': const Color(0xFFE8E8E8),
       };
     }
-
+    
     // Cooler Final Form - Rosso e Bianco
     if (lowerName.contains('cooler') || lowerName.contains('final form')) {
       return {
@@ -76,7 +91,7 @@ class TodoList {
         'accent': const Color(0xFFDC143C),
       };
     }
-
+    
     // Goku Super Saiyan - Giallo/Oro (ORA è sicuro controllare "goku")
     if (lowerName.contains('goku') || lowerName.contains('super saiyan') || lowerName.contains('ssj')) {
       return {
@@ -85,7 +100,7 @@ class TodoList {
         'accent': const Color(0xFFFFFF00),
       };
     }
-
+    
     // Vegeta - Blu navy
     if (lowerName.contains('vegeta')) {
       return {
@@ -94,7 +109,7 @@ class TodoList {
         'accent': const Color(0xFF1E90FF),
       };
     }
-
+    
     // Piccolo - Verde
     if (lowerName.contains('piccolo') || lowerName.contains('namek')) {
       return {
@@ -103,7 +118,7 @@ class TodoList {
         'accent': const Color(0xFF00FF00),
       };
     }
-
+    
     // Freezer/Frieza - Viola e Bianco
     if (lowerName.contains('freezer') || lowerName.contains('frieza')) {
       return {
@@ -112,7 +127,7 @@ class TodoList {
         'accent': const Color(0xFFDA70D6),
       };
     }
-
+    
     // Cell - Verde acido
     if (lowerName.contains('cell')) {
       return {
@@ -121,7 +136,7 @@ class TodoList {
         'accent': const Color(0xFF39FF14),
       };
     }
-
+    
     // Majin Buu - Rosa
     if (lowerName.contains('buu') || lowerName.contains('majin')) {
       return {
@@ -130,7 +145,7 @@ class TodoList {
         'accent': const Color(0xFFFF1493),
       };
     }
-
+    
     // Broly - Verde lime
     if (lowerName.contains('broly')) {
       return {
@@ -139,7 +154,7 @@ class TodoList {
         'accent': const Color(0xFFADFF2F),
       };
     }
-
+    
     // Gohan - Rosso/Arancione
     if (lowerName.contains('gohan')) {
       return {
@@ -148,7 +163,7 @@ class TodoList {
         'accent': const Color(0xFFFF7F50),
       };
     }
-
+    
     // Trunks - Blu chiaro/Lavanda
     if (lowerName.contains('trunks')) {
       return {
@@ -157,7 +172,7 @@ class TodoList {
         'accent': const Color(0xFF6495ED),
       };
     }
-
+    
     // Hit - Viola scuro
     if (lowerName.contains('hit')) {
       return {
@@ -166,7 +181,7 @@ class TodoList {
         'accent': const Color(0xFF8A2BE2),
       };
     }
-
+    
     // Jiren - Grigio/Rosso
     if (lowerName.contains('jiren')) {
       return {
@@ -175,7 +190,7 @@ class TodoList {
         'accent': const Color(0xFFC0C0C0),
       };
     }
-
+    
     // Beerus - Viola
     if (lowerName.contains('beerus')) {
       return {
@@ -184,7 +199,7 @@ class TodoList {
         'accent': const Color(0xFFDA70D6),
       };
     }
-
+    
     // Whis - Blu celeste
     if (lowerName.contains('whis')) {
       return {
@@ -193,7 +208,7 @@ class TodoList {
         'accent': const Color(0xFF1E90FF),
       };
     }
-
+    
     return null; // Nessun easter egg trovato
   }
 }
@@ -204,12 +219,23 @@ class TodoItem {
 
   TodoItem({required this.title, this.isCompleted = false});
 
+  // Conversione da/per JSON
+  Map<String, dynamic> toJson() => {
+    'title': title,
+    'isCompleted': isCompleted,
+  };
+
+  factory TodoItem.fromJson(Map<String, dynamic> json) => TodoItem(
+    title: json['title'],
+    isCompleted: json['isCompleted'],
+  );
+
   // Easter egg: controlla se il titolo contiene riferimenti a Dragon Ball
   Map<String, dynamic>? getThemeColors() {
     final lowerTitle = title.toLowerCase();
-
+    
     // IMPORTANTE: Controlli più specifici PRIMA di quelli generici!
-
+    
     // Goku Black/Zamasu - Rosa/Nero (PRIMA di Goku normale!)
     if (lowerTitle.contains('goku black') || lowerTitle.contains('black') || lowerTitle.contains('zamasu') || lowerTitle.contains('rose')) {
       return {
@@ -218,7 +244,7 @@ class TodoItem {
         'accent': const Color(0xFFFF69B4),
       };
     }
-
+    
     // Ultra Instinct - Argento/Bianco (PRIMA di UI generici!)
     if (lowerTitle.contains('ultra instinct') || lowerTitle.contains('migatte')) {
       return {
@@ -227,7 +253,7 @@ class TodoItem {
         'accent': const Color(0xFFE8E8E8),
       };
     }
-
+    
     // Cooler Final Form - Rosso e Bianco
     if (lowerTitle.contains('cooler') || lowerTitle.contains('final form')) {
       return {
@@ -236,7 +262,7 @@ class TodoItem {
         'accent': const Color(0xFFDC143C),
       };
     }
-
+    
     // Goku Super Saiyan - Giallo/Oro (ORA è sicuro controllare "goku")
     if (lowerTitle.contains('goku') || lowerTitle.contains('super saiyan') || lowerTitle.contains('ssj')) {
       return {
@@ -245,7 +271,7 @@ class TodoItem {
         'accent': const Color(0xFFFFFF00),
       };
     }
-
+    
     // Vegeta - Blu navy
     if (lowerTitle.contains('vegeta')) {
       return {
@@ -254,7 +280,7 @@ class TodoItem {
         'accent': const Color(0xFF1E90FF),
       };
     }
-
+    
     // Piccolo - Verde
     if (lowerTitle.contains('piccolo') || lowerTitle.contains('namek')) {
       return {
@@ -263,7 +289,7 @@ class TodoItem {
         'accent': const Color(0xFF00FF00),
       };
     }
-
+    
     // Freezer/Frieza - Viola e Bianco
     if (lowerTitle.contains('freezer') || lowerTitle.contains('frieza')) {
       return {
@@ -272,7 +298,7 @@ class TodoItem {
         'accent': const Color(0xFFDA70D6),
       };
     }
-
+    
     // Cell - Verde acido
     if (lowerTitle.contains('cell')) {
       return {
@@ -281,7 +307,7 @@ class TodoItem {
         'accent': const Color(0xFF39FF14),
       };
     }
-
+    
     // Majin Buu - Rosa
     if (lowerTitle.contains('buu') || lowerTitle.contains('majin')) {
       return {
@@ -290,7 +316,7 @@ class TodoItem {
         'accent': const Color(0xFFFF1493),
       };
     }
-
+    
     // Broly - Verde lime
     if (lowerTitle.contains('broly')) {
       return {
@@ -299,7 +325,7 @@ class TodoItem {
         'accent': const Color(0xFFADFF2F),
       };
     }
-
+    
     // Gohan - Rosso/Arancione
     if (lowerTitle.contains('gohan')) {
       return {
@@ -308,7 +334,7 @@ class TodoItem {
         'accent': const Color(0xFFFF7F50),
       };
     }
-
+    
     // Trunks - Blu chiaro/Lavanda
     if (lowerTitle.contains('trunks')) {
       return {
@@ -317,7 +343,7 @@ class TodoItem {
         'accent': const Color(0xFF6495ED),
       };
     }
-
+    
     // Hit - Viola scuro
     if (lowerTitle.contains('hit')) {
       return {
@@ -326,7 +352,7 @@ class TodoItem {
         'accent': const Color(0xFF8A2BE2),
       };
     }
-
+    
     // Jiren - Grigio/Rosso
     if (lowerTitle.contains('jiren')) {
       return {
@@ -335,7 +361,7 @@ class TodoItem {
         'accent': const Color(0xFFC0C0C0),
       };
     }
-
+    
     // Beerus - Viola
     if (lowerTitle.contains('beerus')) {
       return {
@@ -344,7 +370,7 @@ class TodoItem {
         'accent': const Color(0xFFDA70D6),
       };
     }
-
+    
     // Whis - Blu celeste
     if (lowerTitle.contains('whis')) {
       return {
@@ -353,7 +379,7 @@ class TodoItem {
         'accent': const Color(0xFF1E90FF),
       };
     }
-
+    
     return null; // Nessun easter egg trovato
   }
 }
@@ -373,6 +399,35 @@ class _HomePageState extends State<HomePage> {
   int _selectedListIndex = 0;
 
   @override
+  void initState() {
+    super.initState();
+    _loadData();
+  }
+
+  // Carica dati da SharedPreferences
+  Future<void> _loadData() async {
+    final prefs = await SharedPreferences.getInstance();
+    final String? data = prefs.getString('todoLists');
+    
+    if (data != null) {
+      final List<dynamic> jsonList = json.decode(data);
+      setState(() {
+        _todoLists = jsonList.map((json) => TodoList.fromJson(json)).toList();
+        if (_todoLists.isEmpty) {
+          _todoLists = [TodoList(name: '🐉 Lista Principale')];
+        }
+      });
+    }
+  }
+
+  // Salva dati in SharedPreferences
+  Future<void> _saveData() async {
+    final prefs = await SharedPreferences.getInstance();
+    final String data = json.encode(_todoLists.map((list) => list.toJson()).toList());
+    await prefs.setString('todoLists', data);
+  }
+
+  @override
   Widget build(BuildContext context) {
     final List<Widget> _screens = [
       ListScreen(
@@ -386,6 +441,7 @@ class _HomePageState extends State<HomePage> {
         onAddList: (name) {
           setState(() {
             _todoLists.add(TodoList(name: name));
+            _saveData();
           });
         },
         onDeleteList: (index) {
@@ -395,28 +451,33 @@ class _HomePageState extends State<HomePage> {
               if (_selectedListIndex >= _todoLists.length) {
                 _selectedListIndex = _todoLists.length - 1;
               }
+              _saveData();
             }
           });
         },
         onRenameList: (index, newName) {
           setState(() {
             _todoLists[index].name = newName;
+            _saveData();
           });
         },
         onAddItem: (item) {
           setState(() {
             _todoLists[_selectedListIndex].items.add(item);
+            _saveData();
           });
         },
         onToggleItem: (index) {
           setState(() {
-            _todoLists[_selectedListIndex].items[index].isCompleted =
-            !_todoLists[_selectedListIndex].items[index].isCompleted;
+            _todoLists[_selectedListIndex].items[index].isCompleted = 
+                !_todoLists[_selectedListIndex].items[index].isCompleted;
+            _saveData();
           });
         },
         onDeleteItem: (index) {
           setState(() {
             _todoLists[_selectedListIndex].items.removeAt(index);
+            _saveData();
           });
         },
       ),
@@ -696,7 +757,7 @@ class _ListScreenState extends State<ListScreen> {
                   dropdownColor: const Color(0xFF16213E),
                   items: List.generate(
                     widget.todoLists.length,
-                        (index) => DropdownMenuItem(
+                    (index) => DropdownMenuItem(
                       value: index,
                       child: Text(
                         widget.todoLists[index].name,
@@ -913,114 +974,114 @@ class _ListScreenState extends State<ListScreen> {
           Expanded(
             child: currentList.items.isEmpty
                 ? Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(30),
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      gradient: LinearGradient(
-                        colors: [
-                          primaryColor.withOpacity(0.3),
-                          secondaryColor.withOpacity(0.3),
-                        ],
-                      ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(30),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            gradient: LinearGradient(
+                              colors: [
+                                primaryColor.withOpacity(0.3),
+                                secondaryColor.withOpacity(0.3),
+                              ],
+                            ),
+                          ),
+                          child: Icon(
+                            Icons.military_tech,
+                            size: 80,
+                            color: accentColor,
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        const Text(
+                          'Nessuna missione attiva',
+                          style: TextStyle(
+                            fontSize: 20,
+                            color: Colors.white70,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        const Text(
+                          'Inizia ad aggiungere le tue sfide!',
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.white54,
+                          ),
+                        ),
+                      ],
                     ),
-                    child: Icon(
-                      Icons.military_tech,
-                      size: 80,
-                      color: accentColor,
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  const Text(
-                    'Nessuna missione attiva',
-                    style: TextStyle(
-                      fontSize: 20,
-                      color: Colors.white70,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  const Text(
-                    'Inizia ad aggiungere le tue sfide!',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.white54,
-                    ),
-                  ),
-                ],
-              ),
-            )
+                  )
                 : ListView.builder(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              itemCount: currentList.items.length,
-              itemBuilder: (context, index) {
-                final item = currentList.items[index];
-                final itemColors = item.getThemeColors();
-                final itemPrimary = itemColors?['primary'] ?? primaryColor;
-                final itemAccent = itemColors?['accent'] ?? accentColor;
-
-                return Container(
-                  margin: const EdgeInsets.symmetric(vertical: 6),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    boxShadow: [
-                      BoxShadow(
-                        color: item.isCompleted
-                            ? const Color(0xFF4CAF50).withOpacity(0.3)
-                            : itemAccent.withOpacity(0.4),
-                        blurRadius: 8,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
-                  ),
-                  child: Card(
-                    margin: EdgeInsets.zero,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                      side: BorderSide(
-                        color: item.isCompleted
-                            ? const Color(0xFF4CAF50)
-                            : itemPrimary,
-                        width: 2,
-                      ),
-                    ),
-                    child: ListTile(
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                      leading: Transform.scale(
-                        scale: 1.3,
-                        child: Checkbox(
-                          value: item.isCompleted,
-                          onChanged: (_) => widget.onToggleItem(index),
-                          activeColor: const Color(0xFF4CAF50),
-                          checkColor: Colors.white,
-                          side: BorderSide(color: itemPrimary, width: 2),
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    itemCount: currentList.items.length,
+                    itemBuilder: (context, index) {
+                      final item = currentList.items[index];
+                      final itemColors = item.getThemeColors();
+                      final itemPrimary = itemColors?['primary'] ?? primaryColor;
+                      final itemAccent = itemColors?['accent'] ?? accentColor;
+                      
+                      return Container(
+                        margin: const EdgeInsets.symmetric(vertical: 6),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          boxShadow: [
+                            BoxShadow(
+                              color: item.isCompleted
+                                  ? const Color(0xFF4CAF50).withOpacity(0.3)
+                                  : itemAccent.withOpacity(0.4),
+                              blurRadius: 8,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
                         ),
-                      ),
-                      title: Text(
-                        item.title,
-                        style: TextStyle(
-                          decoration: item.isCompleted
-                              ? TextDecoration.lineThrough
-                              : null,
-                          color: item.isCompleted
-                              ? Colors.white60
-                              : Colors.white,
-                          fontWeight: FontWeight.w500,
-                          fontSize: 16,
+                        child: Card(
+                          margin: EdgeInsets.zero,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                            side: BorderSide(
+                              color: item.isCompleted
+                                  ? const Color(0xFF4CAF50)
+                                  : itemPrimary,
+                              width: 2,
+                            ),
+                          ),
+                          child: ListTile(
+                            contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                            leading: Transform.scale(
+                              scale: 1.3,
+                              child: Checkbox(
+                                value: item.isCompleted,
+                                onChanged: (_) => widget.onToggleItem(index),
+                                activeColor: const Color(0xFF4CAF50),
+                                checkColor: Colors.white,
+                                side: BorderSide(color: itemPrimary, width: 2),
+                              ),
+                            ),
+                            title: Text(
+                              item.title,
+                              style: TextStyle(
+                                decoration: item.isCompleted
+                                    ? TextDecoration.lineThrough
+                                    : null,
+                                color: item.isCompleted
+                                    ? Colors.white60
+                                    : Colors.white,
+                                fontWeight: FontWeight.w500,
+                                fontSize: 16,
+                              ),
+                            ),
+                            trailing: IconButton(
+                              icon: const Icon(Icons.delete_forever, color: Colors.red),
+                              onPressed: () => widget.onDeleteItem(index),
+                            ),
+                          ),
                         ),
-                      ),
-                      trailing: IconButton(
-                        icon: const Icon(Icons.delete_forever, color: Colors.red),
-                        onPressed: () => widget.onDeleteItem(index),
-                      ),
-                    ),
+                      );
+                    },
                   ),
-                );
-              },
-            ),
           ),
         ],
       ),
@@ -1081,12 +1142,12 @@ class StatsScreen extends StatelessWidget {
           if (index == 0) {
             int totalAll = 0;
             int completedAll = 0;
-
+            
             for (var list in todoLists) {
               totalAll += list.items.length;
               completedAll += list.items.where((item) => item.isCompleted).length;
             }
-
+            
             int pendingAll = totalAll - completedAll;
             int efficiencyAll = totalAll > 0 ? ((completedAll / totalAll) * 100).round() : 0;
 
