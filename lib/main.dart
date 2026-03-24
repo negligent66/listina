@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   runApp(const TodoApp());
@@ -16,11 +18,10 @@ class TodoApp extends StatelessWidget {
         brightness: Brightness.dark,
         primaryColor: const Color(0xFFFF8C00),
         scaffoldBackgroundColor: const Color(0xFF1A1A2E),
-        colorScheme: ColorScheme.dark(
-          primary: const Color(0xFFFF8C00),
-          secondary: const Color(0xFFFFD700),
-          surface: const Color(0xFF16213E),
-          background: const Color(0xFF0F3460),
+        colorScheme: const ColorScheme.dark(
+          primary: Color(0xFFFF8C00),
+          secondary: Color(0xFFFFD700),
+          surface: Color(0xFF16213E),
         ),
         cardTheme: CardThemeData(
           color: const Color(0xFF16213E),
@@ -44,13 +45,24 @@ class TodoList {
   TodoList({required this.name, List<TodoItem>? items})
       : items = items ?? [];
 
+  Map<String, dynamic> toJson() => {
+    'name': name,
+    'items': items.map((item) => item.toJson()).toList(),
+  };
+
+  factory TodoList.fromJson(Map<String, dynamic> json) {
+    return TodoList(
+      name: json['name'],
+      items: (json['items'] as List)
+          .map((item) => TodoItem.fromJson(item))
+          .toList(),
+    );
+  }
+
   // Easter egg: controlla se il nome contiene riferimenti a Dragon Ball
   Map<String, dynamic>? getThemeColors() {
     final lowerName = name.toLowerCase();
 
-    // IMPORTANTE: Controlli più specifici PRIMA di quelli generici!
-
-    // Goku Black/Zamasu - Rosa/Nero (PRIMA di Goku normale!)
     if (lowerName.contains('goku black') || lowerName.contains('black') || lowerName.contains('zamasu') || lowerName.contains('rose')) {
       return {
         'primary': const Color(0xFFFF1493),
@@ -59,7 +71,6 @@ class TodoList {
       };
     }
 
-    // Ultra Instinct - Argento/Bianco (PRIMA di UI generici!)
     if (lowerName.contains('ultra instinct') || lowerName.contains('migatte')) {
       return {
         'primary': const Color(0xFFC0C0C0),
@@ -68,7 +79,6 @@ class TodoList {
       };
     }
 
-    // Cooler Final Form - Rosso e Bianco
     if (lowerName.contains('cooler') || lowerName.contains('final form')) {
       return {
         'primary': const Color(0xFF8B0000),
@@ -77,7 +87,6 @@ class TodoList {
       };
     }
 
-    // Goku Super Saiyan - Giallo/Oro (ORA è sicuro controllare "goku")
     if (lowerName.contains('goku') || lowerName.contains('super saiyan') || lowerName.contains('ssj')) {
       return {
         'primary': const Color(0xFFFFD700),
@@ -86,7 +95,6 @@ class TodoList {
       };
     }
 
-    // Vegeta - Blu navy
     if (lowerName.contains('vegeta')) {
       return {
         'primary': const Color(0xFF000080),
@@ -95,7 +103,6 @@ class TodoList {
       };
     }
 
-    // Piccolo - Verde
     if (lowerName.contains('piccolo') || lowerName.contains('namek')) {
       return {
         'primary': const Color(0xFF228B22),
@@ -104,7 +111,6 @@ class TodoList {
       };
     }
 
-    // Freezer/Frieza - Viola e Bianco
     if (lowerName.contains('freezer') || lowerName.contains('frieza')) {
       return {
         'primary': const Color(0xFF8B008B),
@@ -113,7 +119,6 @@ class TodoList {
       };
     }
 
-    // Cell - Verde acido
     if (lowerName.contains('cell')) {
       return {
         'primary': const Color(0xFF7FFF00),
@@ -122,7 +127,6 @@ class TodoList {
       };
     }
 
-    // Majin Buu - Rosa
     if (lowerName.contains('buu') || lowerName.contains('majin')) {
       return {
         'primary': const Color(0xFFFF69B4),
@@ -131,7 +135,6 @@ class TodoList {
       };
     }
 
-    // Broly - Verde lime
     if (lowerName.contains('broly')) {
       return {
         'primary': const Color(0xFF00FF00),
@@ -140,7 +143,6 @@ class TodoList {
       };
     }
 
-    // Gohan - Rosso/Arancione
     if (lowerName.contains('gohan')) {
       return {
         'primary': const Color(0xFFFF4500),
@@ -149,7 +151,6 @@ class TodoList {
       };
     }
 
-    // Trunks - Blu chiaro/Lavanda
     if (lowerName.contains('trunks')) {
       return {
         'primary': const Color(0xFF87CEEB),
@@ -158,7 +159,6 @@ class TodoList {
       };
     }
 
-    // Hit - Viola scuro
     if (lowerName.contains('hit')) {
       return {
         'primary': const Color(0xFF4B0082),
@@ -167,7 +167,6 @@ class TodoList {
       };
     }
 
-    // Jiren - Grigio/Rosso
     if (lowerName.contains('jiren')) {
       return {
         'primary': const Color(0xFF808080),
@@ -176,7 +175,6 @@ class TodoList {
       };
     }
 
-    // Beerus - Viola
     if (lowerName.contains('beerus')) {
       return {
         'primary': const Color(0xFF9932CC),
@@ -185,7 +183,6 @@ class TodoList {
       };
     }
 
-    // Whis - Blu celeste
     if (lowerName.contains('whis')) {
       return {
         'primary': const Color(0xFF00BFFF),
@@ -194,7 +191,7 @@ class TodoList {
       };
     }
 
-    return null; // Nessun easter egg trovato
+    return null;
   }
 }
 
@@ -204,13 +201,21 @@ class TodoItem {
 
   TodoItem({required this.title, this.isCompleted = false});
 
-  // Easter egg: controlla se il titolo contiene riferimenti a Dragon Ball
+  Map<String, dynamic> toJson() => {
+    'title': title,
+    'isCompleted': isCompleted,
+  };
+
+  factory TodoItem.fromJson(Map<String, dynamic> json) {
+    return TodoItem(
+      title: json['title'],
+      isCompleted: json['isCompleted'],
+    );
+  }
+
   Map<String, dynamic>? getThemeColors() {
     final lowerTitle = title.toLowerCase();
 
-    // IMPORTANTE: Controlli più specifici PRIMA di quelli generici!
-
-    // Goku Black/Zamasu - Rosa/Nero (PRIMA di Goku normale!)
     if (lowerTitle.contains('goku black') || lowerTitle.contains('black') || lowerTitle.contains('zamasu') || lowerTitle.contains('rose')) {
       return {
         'primary': const Color(0xFFFF1493),
@@ -219,7 +224,6 @@ class TodoItem {
       };
     }
 
-    // Ultra Instinct - Argento/Bianco (PRIMA di UI generici!)
     if (lowerTitle.contains('ultra instinct') || lowerTitle.contains('migatte')) {
       return {
         'primary': const Color(0xFFC0C0C0),
@@ -228,7 +232,6 @@ class TodoItem {
       };
     }
 
-    // Cooler Final Form - Rosso e Bianco
     if (lowerTitle.contains('cooler') || lowerTitle.contains('final form')) {
       return {
         'primary': const Color(0xFF8B0000),
@@ -237,7 +240,6 @@ class TodoItem {
       };
     }
 
-    // Goku Super Saiyan - Giallo/Oro (ORA è sicuro controllare "goku")
     if (lowerTitle.contains('goku') || lowerTitle.contains('super saiyan') || lowerTitle.contains('ssj')) {
       return {
         'primary': const Color(0xFFFFD700),
@@ -246,7 +248,6 @@ class TodoItem {
       };
     }
 
-    // Vegeta - Blu navy
     if (lowerTitle.contains('vegeta')) {
       return {
         'primary': const Color(0xFF000080),
@@ -255,7 +256,6 @@ class TodoItem {
       };
     }
 
-    // Piccolo - Verde
     if (lowerTitle.contains('piccolo') || lowerTitle.contains('namek')) {
       return {
         'primary': const Color(0xFF228B22),
@@ -264,7 +264,6 @@ class TodoItem {
       };
     }
 
-    // Freezer/Frieza - Viola e Bianco
     if (lowerTitle.contains('freezer') || lowerTitle.contains('frieza')) {
       return {
         'primary': const Color(0xFF8B008B),
@@ -273,7 +272,6 @@ class TodoItem {
       };
     }
 
-    // Cell - Verde acido
     if (lowerTitle.contains('cell')) {
       return {
         'primary': const Color(0xFF7FFF00),
@@ -282,7 +280,6 @@ class TodoItem {
       };
     }
 
-    // Majin Buu - Rosa
     if (lowerTitle.contains('buu') || lowerTitle.contains('majin')) {
       return {
         'primary': const Color(0xFFFF69B4),
@@ -291,7 +288,6 @@ class TodoItem {
       };
     }
 
-    // Broly - Verde lime
     if (lowerTitle.contains('broly')) {
       return {
         'primary': const Color(0xFF00FF00),
@@ -300,7 +296,6 @@ class TodoItem {
       };
     }
 
-    // Gohan - Rosso/Arancione
     if (lowerTitle.contains('gohan')) {
       return {
         'primary': const Color(0xFFFF4500),
@@ -309,7 +304,6 @@ class TodoItem {
       };
     }
 
-    // Trunks - Blu chiaro/Lavanda
     if (lowerTitle.contains('trunks')) {
       return {
         'primary': const Color(0xFF87CEEB),
@@ -318,7 +312,6 @@ class TodoItem {
       };
     }
 
-    // Hit - Viola scuro
     if (lowerTitle.contains('hit')) {
       return {
         'primary': const Color(0xFF4B0082),
@@ -327,7 +320,6 @@ class TodoItem {
       };
     }
 
-    // Jiren - Grigio/Rosso
     if (lowerTitle.contains('jiren')) {
       return {
         'primary': const Color(0xFF808080),
@@ -336,7 +328,6 @@ class TodoItem {
       };
     }
 
-    // Beerus - Viola
     if (lowerTitle.contains('beerus')) {
       return {
         'primary': const Color(0xFF9932CC),
@@ -345,7 +336,6 @@ class TodoItem {
       };
     }
 
-    // Whis - Blu celeste
     if (lowerTitle.contains('whis')) {
       return {
         'primary': const Color(0xFF00BFFF),
@@ -354,7 +344,7 @@ class TodoItem {
       };
     }
 
-    return null; // Nessun easter egg trovato
+    return null;
   }
 }
 
@@ -373,6 +363,34 @@ class _HomePageState extends State<HomePage> {
   int _selectedListIndex = 0;
 
   @override
+  void initState() {
+    super.initState();
+    _loadData();
+  }
+
+  Future<void> _loadData() async {
+    final prefs = await SharedPreferences.getInstance();
+    final String? todoListsJson = prefs.getString('todo_lists');
+    if (todoListsJson != null) {
+      final List<dynamic> decoded = jsonDecode(todoListsJson);
+      setState(() {
+        _todoLists = decoded.map((item) => TodoList.fromJson(item)).toList();
+        _selectedListIndex = prefs.getInt('selected_list_index') ?? 0;
+        if (_selectedListIndex >= _todoLists.length) {
+          _selectedListIndex = 0;
+        }
+      });
+    }
+  }
+
+  Future<void> _saveData() async {
+    final prefs = await SharedPreferences.getInstance();
+    final String encoded = jsonEncode(_todoLists.map((list) => list.toJson()).toList());
+    await prefs.setString('todo_lists', encoded);
+    await prefs.setInt('selected_list_index', _selectedListIndex);
+  }
+
+  @override
   Widget build(BuildContext context) {
     final List<Widget> _screens = [
       ListScreen(
@@ -382,11 +400,13 @@ class _HomePageState extends State<HomePage> {
           setState(() {
             _selectedListIndex = index;
           });
+          _saveData();
         },
         onAddList: (name) {
           setState(() {
             _todoLists.add(TodoList(name: name));
           });
+          _saveData();
         },
         onDeleteList: (index) {
           setState(() {
@@ -397,27 +417,32 @@ class _HomePageState extends State<HomePage> {
               }
             }
           });
+          _saveData();
         },
         onRenameList: (index, newName) {
           setState(() {
             _todoLists[index].name = newName;
           });
+          _saveData();
         },
         onAddItem: (item) {
           setState(() {
             _todoLists[_selectedListIndex].items.add(item);
           });
+          _saveData();
         },
         onToggleItem: (index) {
           setState(() {
             _todoLists[_selectedListIndex].items[index].isCompleted =
             !_todoLists[_selectedListIndex].items[index].isCompleted;
           });
+          _saveData();
         },
         onDeleteItem: (index) {
           setState(() {
             _todoLists[_selectedListIndex].items.removeAt(index);
           });
+          _saveData();
         },
       ),
       StatsScreen(todoLists: _todoLists),
@@ -427,10 +452,10 @@ class _HomePageState extends State<HomePage> {
       body: _screens[_currentIndex],
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
-          gradient: LinearGradient(
+          gradient: const LinearGradient(
             colors: [
-              const Color(0xFF16213E),
-              const Color(0xFF0F3460),
+              Color(0xFF16213E),
+              Color(0xFF0F3460),
             ],
           ),
           boxShadow: [
@@ -527,7 +552,7 @@ class _ListScreenState extends State<ListScreen> {
                 style: const TextStyle(color: Colors.white),
                 decoration: InputDecoration(
                   hintText: 'Nome della missione...',
-                  hintStyle: TextStyle(color: Colors.white54),
+                  hintStyle: const TextStyle(color: Colors.white54),
                   filled: true,
                   fillColor: const Color(0xFF0F3460),
                   border: OutlineInputBorder(
@@ -606,7 +631,7 @@ class _ListScreenState extends State<ListScreen> {
                 style: const TextStyle(color: Colors.white),
                 decoration: InputDecoration(
                   hintText: 'Nuovo nome...',
-                  hintStyle: TextStyle(color: Colors.white54),
+                  hintStyle: const TextStyle(color: Colors.white54),
                   filled: true,
                   fillColor: const Color(0xFF0F3460),
                   border: OutlineInputBorder(
@@ -898,7 +923,7 @@ class _ListScreenState extends State<ListScreen> {
                         borderRadius: BorderRadius.circular(15),
                       ),
                     ),
-                    child: Row(
+                    child: const Row(
                       children: [
                         Icon(Icons.add_task, color: Colors.white),
                         SizedBox(width: 8),
@@ -1066,7 +1091,7 @@ class StatsScreen extends StatelessWidget {
             ),
           ),
         ),
-        title: Row(
+        title: const Row(
           children: [
             Icon(Icons.emoji_events, color: Colors.white),
             SizedBox(width: 10),
@@ -1122,7 +1147,7 @@ class StatsScreen extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Row(
+                      const Row(
                         children: [
                           Icon(Icons.trending_up, color: Colors.white, size: 30),
                           SizedBox(width: 10),
